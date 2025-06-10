@@ -1,0 +1,36 @@
+# 📌 STEP 1: Install necessary libraries
+!pip install diffusers transformers accelerate safetensors --quiet
+!pip install xformers --upgrade --quiet
+
+# 📌 STEP 2: Login to Hugging Face (paste your token when prompted)
+from huggingface_hub import notebook_login
+notebook_login()
+
+# 📌 STEP 3: Check for GPU (CUDA) availability
+import torch
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using device: {device}")
+
+# 📌 STEP 4: Load Stable Diffusion model
+from diffusers import StableDiffusionPipeline
+
+# If using CPU, change torch_dtype to float32
+torch_dtype = torch.float16 if device == "cuda" else torch.float32
+
+pipe = StableDiffusionPipeline.from_pretrained(
+    "CompVis/stable-diffusion-v1-4",
+    revision="fp16" if device == "cuda" else "main",
+    torch_dtype=torch_dtype,
+    use_auth_token=True
+).to(device)
+
+# 📌 STEP 5: Input your prompt
+prompt = "floral embroidery pattern with mandala design, red and gold colors, traditional Indian style"
+
+# 📌 STEP 6: Generate and show the image
+image = pipe(prompt).images[0]
+image.show()
+
+# 📌 STEP 7: Save the image
+image.save("embroidery_pattern.png")
+print("✅ Pattern saved as 'embroidery_pattern.png'")
