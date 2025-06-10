@@ -1,0 +1,1 @@
+# Generating-Patterns-for-Handicrafts-and-Embroidery-Using-Generative-AI
